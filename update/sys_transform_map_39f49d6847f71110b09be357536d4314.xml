@@ -3,14 +3,25 @@
         <active>true</active>
         <copy_empty_fields>false</copy_empty_fields>
         <create_new_record_on_empty_coalesce_fields>false</create_new_record_on_empty_coalesce_fields>
-        <enforce_mandatory_fields>No</enforce_mandatory_fields>
+        <enforce_mandatory_fields>All Fields</enforce_mandatory_fields>
         <name>Import Historic NeedIt Data</name>
         <order>100</order>
         <run_business_rules>true</run_business_rules>
-        <run_script>false</run_script>
+        <run_script>true</run_script>
         <script><![CDATA[(function transformRow(source, target, map, log, isUpdate) {
 
-	// Add your code here
+// If the source data does not have a u_requested_for_email field, 
+  // create the target email address from the Requested for value.  Email addresses 
+  // have the format firstname.lastname@example.com.  Convert the u_requested_for 
+  // value to lowercase.  Replace the space with a . and concatenate with 
+  // @example.com
+   var name = source.u_requested_for.toLowerCase();
+  if(!("u_requested_for_email" in source)){
+   
+    target.requested_for_email = name.replace(" ", ".") + "@example1.com";
+  } else {
+    target.requested_for_email = name.replace(" ", ".") + "@example2.com";
+  }
 
 })(source, target, map, log, action==="update");]]></script>
         <source_table>x_58872_needit_historic_needit_data</source_table>
